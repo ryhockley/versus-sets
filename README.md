@@ -1,0 +1,1 @@
+This is a simple pickleball app that sets up a series of games between five people. The game is played with four, so this allows all five to play, with one person sitting off each time. It ensures everyone plays with each person and against each person.
