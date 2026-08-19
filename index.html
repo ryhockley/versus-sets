@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#111111">
+<title>Versus Sets</title>
+<style>
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { margin:0; background:#111; font-family:Arial,Helvetica,sans-serif; }
+body { color:#111; }
+.app { max-width:720px; margin:auto; padding:10px 9px 22px; }
+header { display:flex; align-items:center; justify-content:space-between; margin-bottom:9px; color:white; }
+h1 { margin:0; font-size:21px; }
+.status { font-size:12px; opacity:.75; margin-top:2px; }
+.topbtn { border:0; border-radius:9px; padding:9px 12px; font-weight:800; background:white; color:#111; }
+.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+.card {
+  position:relative; padding:0; border:2px solid #333; border-radius:3px;
+  overflow:hidden; background:white; cursor:pointer; touch-action:manipulation;
+}
+.set-title {
+  height:31px; display:flex; align-items:center; justify-content:center;
+  background:#f4f4f4; border-bottom:1px solid #444;
+  font-size:14px; font-weight:800;
+}
+.player-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  grid-template-rows:repeat(3, 1fr); aspect-ratio:2/3;
+}
+.player,.sitting {
+  display:flex; align-items:center; justify-content:center;
+  border-right:1px solid #444; border-bottom:1px solid #444;
+  font-size:25px; font-weight:800;
+}
+.player:nth-child(2),.player:nth-child(4),.player:nth-child(6) { border-right:0; }
+.player:nth-child(5),.player:nth-child(6) { border-bottom:0; }
+.sitting { background:#fff; font-size:19px; }
+.green { background:#78d889; }
+.yellow { background:#fff000; }
+.blue { background:#6bb8df; }
+.purple { background:#e9c6e4; }
+.orange { background:#ffc126; }
+.card.used { opacity:.45; }
+.cross {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:115px; line-height:1; font-weight:900; color:#d00000;
+  text-shadow:0 1px 2px white; opacity:0; transform:scale(.7);
+  pointer-events:none; transition:.12s;
+}
+.card.used .cross { opacity:.92; transform:scale(1); }
+@media (min-width:600px) {
+  .grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media (max-width:380px) {
+  .app { padding:7px 6px 18px; }
+  .grid { gap:6px; }
+  .set-title { height:28px; font-size:12px; }
+  .player,.sitting { font-size:21px; }
+  .sitting { font-size:16px; }
+  .cross { font-size:90px; }
+  h1 { font-size:18px; }
+}
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-512.png" type="image/png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Versus Sets">
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>VERSUS SETS</h1>
+      <div class="status" id="status">0 of 15 used</div>
+    </div>
+    <button class="topbtn" onclick="resetSets()">RESET</button>
+  </header>
+  <main class="grid">
+
+      <button class="card" data-set="1" onclick="toggleSet(1)">
+        <div class="set-title">SET 1 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player yellow">2</span>
+          <span class="player blue">3</span>
+          <span class="player purple">4</span>
+          <span class="sitting">Sitting</span>
+          <span class="player orange">5</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="2" onclick="toggleSet(2)">
+        <div class="set-title">SET 2 - Versus</div>
+        <div class="player-grid">
+          <span class="player yellow">2</span>
+          <span class="player purple">4</span>
+          <span class="player blue">3</span>
+          <span class="player orange">5</span>
+          <span class="sitting">Sitting</span>
+          <span class="player green">1</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="3" onclick="toggleSet(3)">
+        <div class="set-title">SET 3 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player orange">5</span>
+          <span class="player yellow">2</span>
+          <span class="player blue">3</span>
+          <span class="sitting">Sitting</span>
+          <span class="player purple">4</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="4" onclick="toggleSet(4)">
+        <div class="set-title">SET 4 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player blue">3</span>
+          <span class="player purple">4</span>
+          <span class="player orange">5</span>
+          <span class="sitting">Sitting</span>
+          <span class="player yellow">2</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="5" onclick="toggleSet(5)">
+        <div class="set-title">SET 5 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player purple">4</span>
+          <span class="player yellow">2</span>
+          <span class="player orange">5</span>
+          <span class="sitting">Sitting</span>
+          <span class="player blue">3</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="6" onclick="toggleSet(6)">
+        <div class="set-title">SET 6 - Versus</div>
+        <div class="player-grid">
+          <span class="player yellow">2</span>
+          <span class="player purple">4</span>
+          <span class="player blue">3</span>
+          <span class="player green">1</span>
+          <span class="sitting">Sitting</span>
+          <span class="player orange">5</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="7" onclick="toggleSet(7)">
+        <div class="set-title">SET 7 - Versus</div>
+        <div class="player-grid">
+          <span class="player yellow">2</span>
+          <span class="player orange">5</span>
+          <span class="player blue">3</span>
+          <span class="player purple">4</span>
+          <span class="sitting">Sitting</span>
+          <span class="player green">1</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="8" onclick="toggleSet(8)">
+        <div class="set-title">SET 8 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player yellow">2</span>
+          <span class="player orange">5</span>
+          <span class="player blue">3</span>
+          <span class="sitting">Sitting</span>
+          <span class="player purple">4</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="9" onclick="toggleSet(9)">
+        <div class="set-title">SET 9 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player orange">5</span>
+          <span class="player purple">4</span>
+          <span class="player blue">3</span>
+          <span class="sitting">Sitting</span>
+          <span class="player yellow">2</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="10" onclick="toggleSet(10)">
+        <div class="set-title">SET 10 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player yellow">2</span>
+          <span class="player purple">4</span>
+          <span class="player orange">5</span>
+          <span class="sitting">Sitting</span>
+          <span class="player blue">3</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="11" onclick="toggleSet(11)">
+        <div class="set-title">SET 11 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player purple">4</span>
+          <span class="player yellow">2</span>
+          <span class="player blue">3</span>
+          <span class="sitting">Sitting</span>
+          <span class="player orange">5</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="12" onclick="toggleSet(12)">
+        <div class="set-title">SET 12 - Versus</div>
+        <div class="player-grid">
+          <span class="player yellow">2</span>
+          <span class="player blue">3</span>
+          <span class="player purple">4</span>
+          <span class="player orange">5</span>
+          <span class="sitting">Sitting</span>
+          <span class="player green">1</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="13" onclick="toggleSet(13)">
+        <div class="set-title">SET 13 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player blue">3</span>
+          <span class="player yellow">2</span>
+          <span class="player orange">5</span>
+          <span class="sitting">Sitting</span>
+          <span class="player purple">4</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="14" onclick="toggleSet(14)">
+        <div class="set-title">SET 14 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player purple">4</span>
+          <span class="player blue">3</span>
+          <span class="player orange">5</span>
+          <span class="sitting">Sitting</span>
+          <span class="player yellow">2</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+      <button class="card" data-set="15" onclick="toggleSet(15)">
+        <div class="set-title">SET 15 - Versus</div>
+        <div class="player-grid">
+          <span class="player green">1</span>
+          <span class="player orange">5</span>
+          <span class="player yellow">2</span>
+          <span class="player purple">4</span>
+          <span class="sitting">Sitting</span>
+          <span class="player blue">3</span>
+        </div>
+        <div class="cross">×</div>
+      </button>
+  </main>
+</div>
+<script>
+const KEY="versus-sets-used-v2";
+function getUsed() {
+  try { return JSON.parse(localStorage.getItem(KEY)||"[]"); } catch(e) { return []; }
+}
+function saveUsed(a) { localStorage.setItem(KEY,JSON.stringify(a)); }
+function render() {
+  const used=getUsed();
+  document.querySelectorAll(".card").forEach(c=>c.classList.toggle("used",used.includes(Number(c.dataset.set))));
+  document.getElementById("status").textContent=used.length+" of 15 used";
+}
+function toggleSet(n) {
+  let a=getUsed();
+  a=a.includes(n)?a.filter(x=>x!==n):[...a,n];
+  saveUsed(a); render();
+}
+function resetSets() {
+  if(confirm("Start a new game and clear all Xs?")) {
+    localStorage.removeItem(KEY); render();
+  }
+}
+render();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
